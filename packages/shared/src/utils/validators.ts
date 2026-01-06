@@ -101,13 +101,23 @@ export function validateAIEmailRequest(request: AIEmailRequest): { valid: boolea
     errors.push('Email body is required');
   }
 
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const allEmails = [...request.to, ...(request.cc || [])];
-  const invalidEmails = allEmails.filter((email) => !emailRegex.test(email));
-
-  if (invalidEmails.length > 0) {
-    errors.push(`Invalid email addresses: ${invalidEmails.join(', ')}`);
+  // Email validation - RFC 5322 compliant pattern
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  
+  // Validate 'to' emails
+  for (const email of request.to) {
+    if (!emailRegex.test(email)) {
+      errors.push(`Invalid 'to' email address: ${email}`);
+    }
+  }
+  
+  // Validate 'cc' emails if present
+  if (request.cc) {
+    for (const email of request.cc) {
+      if (!emailRegex.test(email)) {
+        errors.push(`Invalid 'cc' email address: ${email}`);
+      }
+    }
   }
 
   return {

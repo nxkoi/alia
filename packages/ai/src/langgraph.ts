@@ -126,14 +126,23 @@ export class LangGraphWorkflow {
    */
   private waitForApproval(requestId: string): Promise<HumanApprovalResponse> {
     return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
+      let timeoutId: NodeJS.Timeout | null = null;
+      
+      const cleanup = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
         this.approvalCallbacks.delete(requestId);
+      };
+
+      timeoutId = setTimeout(() => {
+        cleanup();
         reject(new Error('Approval request timed out'));
       }, this.config.approvalTimeout);
 
       this.approvalCallbacks.set(requestId, (response: HumanApprovalResponse) => {
-        clearTimeout(timeout);
-        this.approvalCallbacks.delete(requestId);
+        cleanup();
         resolve(response);
       });
     });
