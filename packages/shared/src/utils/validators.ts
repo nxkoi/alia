@@ -5,6 +5,9 @@
 import type { TaskInput, TaskUpdate } from '../types/task';
 import type { AITaskCreationRequest, AIEmailRequest } from '../types/ai';
 
+// RFC 5322 compliant email regex - compiled once at module level
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
 /**
  * Validate task input
  */
@@ -101,12 +104,9 @@ export function validateAIEmailRequest(request: AIEmailRequest): { valid: boolea
     errors.push('Email body is required');
   }
 
-  // Email validation - RFC 5322 compliant pattern
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  
   // Validate 'to' emails
   for (const email of request.to) {
-    if (!emailRegex.test(email)) {
+    if (!EMAIL_REGEX.test(email)) {
       errors.push(`Invalid 'to' email address: ${email}`);
     }
   }
@@ -114,7 +114,7 @@ export function validateAIEmailRequest(request: AIEmailRequest): { valid: boolea
   // Validate 'cc' emails if present
   if (request.cc) {
     for (const email of request.cc) {
-      if (!emailRegex.test(email)) {
+      if (!EMAIL_REGEX.test(email)) {
         errors.push(`Invalid 'cc' email address: ${email}`);
       }
     }
