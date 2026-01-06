@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production
+build/
+dist/
+out/
+.next/
+
+# Misc
+.DS_Store
+*.pem
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env files
+.env*.local
+
+# Vercel
+.vercel
+
+# Turbo
+.turbo
+
+# TypeScript
+*.tsbuildinfo
+
+# IDEs
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.vs/
+
+# Electron
+apps/desktop/out/
+
+# React Native
+apps/mobile/.expo/
+apps/mobile/.expo-shared/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
